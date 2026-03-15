@@ -33,10 +33,20 @@ def get_ga4_report(
     Returns:
         Słownik z wynikami raportu zawierający nagłówki i wiersze danych
     """
-    credentials = service_account.Credentials.from_service_account_file(
-        GA4_CREDENTIALS_PATH,
-        scopes=["https://www.googleapis.com/auth/analytics.readonly"],
-    )
+    # Obsługa credentials: z Streamlit Secrets (JSON string) lub z pliku
+    ga4_credentials_json = os.getenv("GA4_CREDENTIALS_JSON")
+    if ga4_credentials_json:
+        import json as _json
+        info = _json.loads(ga4_credentials_json)
+        credentials = service_account.Credentials.from_service_account_info(
+            info,
+            scopes=["https://www.googleapis.com/auth/analytics.readonly"],
+        )
+    else:
+        credentials = service_account.Credentials.from_service_account_file(
+            GA4_CREDENTIALS_PATH,
+            scopes=["https://www.googleapis.com/auth/analytics.readonly"],
+        )
     client = BetaAnalyticsDataClient(credentials=credentials)
 
     request = RunReportRequest(
