@@ -34,6 +34,20 @@ st.set_page_config(
 st.title("🥩 Agent analityczny")
 st.caption("pieczoneiwedzone.pl — sprzedaż, zamówienia, produkty, ruch GA4")
 
+with st.expander("🔧 Debug — stan połączeń", expanded=False):
+    from tools.idosell import API_KEY, BASE_URL
+    st.write("IDOSELL BASE_URL:", BASE_URL)
+    st.write("IDOSELL API_KEY (pierwsze 10):", str(API_KEY)[:10] if API_KEY else "BRAK")
+    import requests as _req
+    try:
+        r = _req.post(f"{BASE_URL}/orders/search",
+            headers={"X-API-KEY": API_KEY, "Content-Type": "application/json"},
+            json={"params": {"resultsLimit": 1}}, timeout=5)
+        st.write("IdoSell status:", r.status_code)
+        st.write("IdoSell odpowiedź:", r.text[:200])
+    except Exception as e:
+        st.write("IdoSell błąd:", str(e))
+
 # ── Stałe (z agent.py) ────────────────────────────────────────────────────────
 MODEL = "claude-opus-4-5"
 
