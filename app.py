@@ -5,10 +5,13 @@ from datetime import date
 import streamlit as st
 
 # Ustaw zmienne środowiskowe ze Streamlit Secrets przed importem modułów
-for key in ["ANTHROPIC_API_KEY", "IDOSELL_API_KEY", "IDOSELL_SHOP_URL",
-            "GA4_PROPERTY_ID", "GA4_CREDENTIALS_PATH", "GA4_CREDENTIALS_JSON"]:
-    if key in st.secrets:
-        os.environ[key] = st.secrets[key]
+try:
+    for key in ["ANTHROPIC_API_KEY", "IDOSELL_API_KEY", "IDOSELL_SHOP_URL",
+                "GA4_PROPERTY_ID", "GA4_CREDENTIALS_PATH", "GA4_CREDENTIALS_JSON"]:
+        if key in st.secrets:
+            os.environ[key] = st.secrets[key]
+except Exception:
+    pass  # lokalnie używamy .env
 
 from dotenv import load_dotenv
 load_dotenv()
